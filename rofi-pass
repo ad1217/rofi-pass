@@ -401,18 +401,24 @@ mainMenu () {
 					stuff["${_id}"]=${_val}
 				fi
 			done < <(printf '%s\n' "${fields}")
-
-			if test "${stuff['autotype']+autotype}"; then
-				:
-			else
-				stuff["autotype"]="${USERNAME_field} :tab pass"
-			fi
 		fi
 	fi
 
 	if [[ -z "${stuff["${AUTOTYPE_field}"]}" ]]; then
 		if [[ -n $default_autotype ]]; then
-			stuff["${AUTOTYPE_field}"]="${default_autotype}"
+            parts=true
+            for word in ${default_autotype}; do
+                if [[ ! "$word" =~ :(tab|space|delay|enter|otp) ]]; then
+                    if [[ -z "${stuff["$word"]}" ]]; then
+                        parts=false
+                        break
+                    fi
+                fi
+            done
+
+            if [[ "$parts" == "true" ]]; then
+			    stuff["${AUTOTYPE_field}"]="${default_autotype}"
+            fi
 		fi
 	fi
 	if [[ -z "${stuff["${USERNAME_field}"]}" ]]; then
@@ -489,8 +495,8 @@ typeMenu () {
 		if [[ $default_do == "menu" ]]; then
 			checkIfPass
 			local -a keys=("${!stuff[@]}")
-			keys=("${keys[@]/$AUTOTYPE_field}")
-			typefield=$({ echo ${AUTOTYPE_field} ; printf '%s\n' "${keys[@]}" | sort; } | _rofi -dmenu  -p "Choose Field to type > ")
+			keys=("${keys[@]}")
+			typefield=$({ printf '%s\n' "${keys[@]}" | sort; } | _rofi -dmenu  -p "Choose Field to type > ")
 			typefield_exit=$?
 			if [[ $typefield_exit -eq 1 ]]; then
 				exit
