@@ -406,19 +406,19 @@ mainMenu () {
 
 	if [[ -z "${stuff["${AUTOTYPE_field}"]}" ]]; then
 		if [[ -n $default_autotype ]]; then
-            parts=true
-            for word in ${default_autotype}; do
-                if [[ ! "$word" =~ :(tab|space|delay|enter|otp) ]]; then
-                    if [[ -z "${stuff["$word"]}" ]]; then
-                        parts=false
-                        break
-                    fi
-                fi
-            done
+			parts=true
+			for word in ${default_autotype}; do
+				if [[ ! "$word" =~ :(tab|space|delay|enter|otp) ]]; then
+					if [[ -z "${stuff["$word"]}" ]]; then
+						parts=false
+						break
+					fi
+				fi
+			done
 
-            if [[ "$parts" == "true" ]]; then
-			    stuff["${AUTOTYPE_field}"]="${default_autotype}"
-            fi
+			if [[ "$parts" == "true" ]]; then
+				stuff["${AUTOTYPE_field}"]="${default_autotype}"
+			fi
 		fi
 	fi
 	if [[ -z "${stuff["${USERNAME_field}"]}" ]]; then
